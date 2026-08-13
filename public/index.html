@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Collation Ledger</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div class="ledger">
+  <div class="masthead">
+    <div class="eyebrow">Data Collation &amp; Reporting</div>
+    <h1>The Collation Ledger</h1>
+    <p>An orderly place to gather names, and turn them into reports.</p>
+  </div>
+
+  <div class="panel">
+    <h2>Forms</h2>
+    <p class="muted" id="listIntro">Loading the current forms…</p>
+    <div id="catList"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Administrators</h2>
+    <p class="muted">Manage categories, review entries, and export reports.</p>
+    <a href="admin.html"><button>Open the Admin Desk</button></a>
+  </div>
+
+  <footer class="sig">kept in good order, one entry at a time</footer>
+</div>
+
+<script>
+async function loadCategories() {
+  try {
+    const res = await fetch('/api/categories');
+    const data = await res.json();
+    const wrap = document.getElementById('catList');
+    const intro = document.getElementById('listIntro');
+    if (!data.categories || data.categories.length === 0) {
+      intro.textContent = 'No forms have been set up yet — check back once an admin creates one.';
+      return;
+    }
+    intro.textContent = 'Choose a form below to view or add entries.';
+    wrap.innerHTML = data.categories.map(c => `
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--rule);">
+        <div>
+          <strong>${c.name}</strong>
+          <div class="muted">${c.fields.map(f => f.label).join(', ')}</div>
+        </div>
+        <a href="entry.html?cat=${c.id}&t=${c.shareToken}"><button>Open form</button></a>
+      </div>
+    `).join('');
+  } catch (e) {
+    document.getElementById('listIntro').textContent = 'Could not load the list of forms right now.';
+  }
+}
+loadCategories();
+</script>
+</body>
+</html>
