@@ -1,9 +1,0 @@
-{
-  "name": "data-collate-app",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Data collation & report generation app with category management and permission controls",
-  "dependencies": {
-    "@netlify/blobs": "^7.3.0"
-  }
-}
